@@ -10,13 +10,19 @@
     <h1>Tienda Virtual</h1>
     <h2>Productos Disponibles</h2>
     <p><i>Valores expresados sin IVA</i></p>
-    <ol>
-        <li>$12000</li>
-        <li>$12500</li>
-        <li>$8000</li>
-        <li>$15000</li>
-    </ol>
+    <ol id="listaProductos"></ol>
     <p>Se puede abonar al contado o hasta en <b>6 cuotas</b> (5% de interés)</p>
+    <div>
+        <input type="number" id="indiceProducto" min="1" max="10" />
+        <button id="agregarProducto" onClick="agregarProducto()">Agregar Producto</button>
+    </div>
+    <br>
+    <div>
+        <input type="number" id="cantidadCuotas" min="1" max="6" />
+        <button id="confirmarCuotas" onClick="confirmarCuotas()">Confirmar Cuotas</button>
+    </div>
+    <ul id="carritoProductos"></ul>
+    <p id="totalCompra"></p>
     <script src="./js/scripts.js"></script>     
 </body>
 </html>
