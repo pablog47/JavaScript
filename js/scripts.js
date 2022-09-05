@@ -10,6 +10,7 @@ const calcularPrecio = (precio, cuotas) => {
 }
 
 let carrito = []
+const buscador = document.getElementById("buscador")
 const listaProductos = document.getElementById("listaProductos")
 const carritoProductos = document.getElementById("carritoProductos")
 const inputProducto = document.getElementById("indiceProducto")
@@ -68,18 +69,38 @@ const productos = [
     },
 ]
 
-productos.forEach(producto => {
-    const item = document.createElement("li")
-    item.appendChild(document.createTextNode(`${producto.nombre} - $${producto.precio} (${producto.id})`))
-    listaProductos.appendChild(item)
-})
+let productosFiltrados = []
+
+const filtrarProductos = (texto) => {   
+    if(texto) {
+        productosFiltrados = productos.filter(producto => producto.nombre.toLowerCase().includes(texto))
+    } else {
+        productosFiltrados = productos
+    }
+    renderizarProductos()
+}
+
+const renderizarProductos = () => {
+    listaProductos.innerHTML = ""
+    if(productosFiltrados.length) {
+        productosFiltrados.forEach(producto => {
+            const item = document.createElement("li")
+            item.appendChild(document.createTextNode(`${producto.nombre} - $${producto.precio} (${producto.id})`))
+            listaProductos.appendChild(item)
+        })
+    } else {
+        listaProductos.appendChild(document.createTextNode(`No se han encontrado productos que coincidan con la búsqueda "${buscador.value}".`))
+    }
+}
+
+filtrarProductos()
 
 const agregarProducto = () => {
     const numero = parseInt(inputProducto.value)
-    if(!validarNumeroEnRango(numero, 1, 10)) {
-        alert("Debe ingresar un número entre 1 y 10")
+    if(!validarNumeroEnRango(numero, 1, productosFiltrados.length)) {
+        alert("Opción inválida")
     } else {
-        const producto = productos[numero-1]
+        const producto = productosFiltrados[numero-1]
         const index = carrito.findIndex(elem => elem.id === producto.id)
         if(index !== -1) {
             carrito[index] = { ...carrito[index], cantidad: carrito[index].cantidad + 1 }
@@ -114,3 +135,4 @@ const mostrarTotal = () => {
         totalCompra.appendChild(document.createTextNode(`Total de la compra: $${total.toFixed(2)}${cuotas !== 1 ? ` en ${cuotas} pagos de $${(total / cuotas).toFixed(2)} (con 5% de interés)` : ''}`))
     }
 }
+
