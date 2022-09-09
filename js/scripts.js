@@ -16,6 +16,7 @@ const carritoProductos = document.getElementById("carritoProductos")
 const inputProducto = document.getElementById("indiceProducto")
 const inputCuotas = document.getElementById("cantidadCuotas")
 const totalCompra = document.getElementById("totalCompra")
+const btnConfirmarCuotas = document.getElementById("confirmarCuotas")
 const productos = [
     {
         id: nuevoID(),
@@ -71,7 +72,8 @@ const productos = [
 
 let productosFiltrados = []
 
-const filtrarProductos = (texto) => {   
+const filtrarProductos = () => {   
+    const texto = buscador.value
     if(texto) {
         productosFiltrados = productos.filter(producto => producto.nombre.toLowerCase().includes(texto))
     } else {
@@ -80,23 +82,7 @@ const filtrarProductos = (texto) => {
     renderizarProductos()
 }
 
-const renderizarProductos = () => {
-    listaProductos.innerHTML = ""
-    if(productosFiltrados.length) {
-        productosFiltrados.forEach(producto => {
-            const item = document.createElement("li")
-            item.appendChild(document.createTextNode(`${producto.nombre} - $${producto.precio} (${producto.id})`))
-            listaProductos.appendChild(item)
-        })
-    } else {
-        listaProductos.appendChild(document.createTextNode(`No se han encontrado productos que coincidan con la búsqueda "${buscador.value}".`))
-    }
-}
-
-filtrarProductos()
-
-const agregarProducto = () => {
-    const numero = parseInt(inputProducto.value)
+const agregarProducto = (numero) => {
     if(!validarNumeroEnRango(numero, 1, productosFiltrados.length)) {
         alert("Opción inválida")
     } else {
@@ -107,20 +93,40 @@ const agregarProducto = () => {
         } else {
             carrito.push({ ...producto, cantidad: 1 })
         }
-        carritoProductos.innerHTML = ""
-        total = 0
-        carrito.forEach(articulo => {
-            const item = document.createElement("li")
-            item.appendChild(document.createTextNode(`${articulo.nombre} - $${(articulo.precio * articulo.cantidad * IVA).toFixed(2)} (${articulo.cantidad} x $${articulo.precio} + IVA)`))
-            carritoProductos.appendChild(item)
-            total += articulo.precio * articulo.cantidad * IVA
-        })
-        mostrarTotal()
+        renderizarCarrito()
     }
+}
+
+const quitarProducto = (numero) => {
+    carrito = carrito.filter((_item, i) => i !== numero)  
+    if(!carrito.length) {
+        total = 0
+        cuotas = 1
+        inputCuotas.value = ""
+    }
+    renderizarCarrito()
+}
+
+const renderizarCarrito = () => {
+    carritoProductos.innerHTML = ""
+    total = 0
+    carrito.forEach((articulo, i) => {
+        const item = document.createElement("li")
+        const botonQuitar = document.createElement("button")
+        botonQuitar.innerHTML = `Quitar`
+        botonQuitar.type = "button"
+        botonQuitar.addEventListener("click", () => quitarProducto(i))
+        item.innerHTML = `<span>${articulo.nombre} - $${(articulo.precio * articulo.cantidad * IVA).toFixed(2)} (${articulo.cantidad} x $${articulo.precio} + IVA)</span>`
+        item.appendChild(botonQuitar)
+        carritoProductos.appendChild(item)
+        total += articulo.precio * articulo.cantidad * IVA
+    })
+    mostrarTotal()
 }
 
 const confirmarCuotas = () => {
     cuotas = parseInt(inputCuotas.value)
+    console.log(cuotas)
     if(!validarNumeroEnRango(cuotas, 1, 6)) {
         alert("Debe ingresar un número entre 1 y 6")
         cuotas = 1
@@ -130,9 +136,32 @@ const confirmarCuotas = () => {
 
 const mostrarTotal = () => {
     if(total) {
-        total = cuotas !== 1 ? total * INTERES : total
+        const totalAMostrar = cuotas !== 1 ? total * INTERES : total
+        totalCompra.innerHTML = `Total de la compra: $${totalAMostrar.toFixed(2)}${cuotas !== 1 ? ` en ${cuotas} pagos de $${(totalAMostrar / cuotas).toFixed(2)} (con 5% de interés)` : ''}`
+    } else {
         totalCompra.innerHTML = ""
-        totalCompra.appendChild(document.createTextNode(`Total de la compra: $${total.toFixed(2)}${cuotas !== 1 ? ` en ${cuotas} pagos de $${(total / cuotas).toFixed(2)} (con 5% de interés)` : ''}`))
     }
 }
 
+const renderizarProductos = () => {
+    listaProductos.innerHTML = ""
+    if(productosFiltrados.length) {
+        productosFiltrados.forEach((producto, i) => {
+            const item = document.createElement("li")
+            const botonAgregar = document.createElement("button")
+            botonAgregar.innerHTML = `Agregar`
+            botonAgregar.type = "button"
+            botonAgregar.addEventListener("click", () => agregarProducto(i+1))
+            item.innerHTML = `<span>${producto.nombre} - $${producto.precio} (${producto.id})</span>`
+            item.appendChild(botonAgregar)
+            listaProductos.appendChild(item)
+        })
+    } else {
+        listaProductos.innerHTML = `No se han encontrado productos que coincidan con la búsqueda <b>${buscador.value}</b>.`
+    }
+}
+
+buscador.addEventListener("input", filtrarProductos)
+btnConfirmarCuotas.addEventListener("click", confirmarCuotas)
+
+filtrarProductos()
