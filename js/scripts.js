@@ -16,6 +16,11 @@ const inputProducto = document.getElementById("indiceProducto")
 const inputCuotas = document.getElementById("cantidadCuotas")
 const totalCompra = document.getElementById("totalCompra")
 const btnConfirmarCuotas = document.getElementById("confirmarCuotas")
+const alert = (texto) => Swal.fire({
+        icon: 'error',
+        title: 'Alerta',
+        text: texto,
+  })
 const productos = [
     {
         id: 1545,
