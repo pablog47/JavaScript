@@ -87,19 +87,15 @@ const filtrarProductos = () => {
 }
 
 const agregarProducto = (numero) => {
-    if(!validarNumeroEnRango(numero, 1, productosFiltrados.length)) {
-        alert("Opción inválida")
+    const producto = productosFiltrados[numero-1]
+    const index = carrito.findIndex(elem => elem.id === producto.id)
+    if(index !== -1) {
+        carrito[index] = { ...carrito[index], cantidad: carrito[index].cantidad + 1 }
     } else {
-        const producto = productosFiltrados[numero-1]
-        const index = carrito.findIndex(elem => elem.id === producto.id)
-        if(index !== -1) {
-            carrito[index] = { ...carrito[index], cantidad: carrito[index].cantidad + 1 }
-        } else {
-            carrito.push({ ...producto, cantidad: 1 })
-        }
-        localStorage.setItem("carrito", JSON.stringify(carrito))
-        renderizarCarrito()
+        carrito.push({ ...producto, cantidad: 1 })
     }
+    localStorage.setItem("carrito", JSON.stringify(carrito))
+    renderizarCarrito()
 }
 
 const quitarProducto = (numero) => {
@@ -133,13 +129,17 @@ const renderizarCarrito = () => {
 }
 
 const confirmarCuotas = () => {
-    cuotas = parseInt(inputCuotas.value)
-    if(!validarNumeroEnRango(cuotas, 1, 6)) {
-        alert("Debe ingresar un número entre 1 y 6")
-        cuotas = 1
+    if(!carrito.length) {
+        alert('El carrito está vacío')
+    } else {
+        cuotas = parseInt(inputCuotas.value)
+        if(!validarNumeroEnRango(cuotas, 1, 6)) {
+            alert("Debe ingresar un número de cuotas entre 1 y 6")
+            cuotas = 1
+        }
+        localStorage.setItem("cuotas", JSON.stringify(cuotas))
+        mostrarTotal()
     }
-    localStorage.setItem("cuotas", JSON.stringify(cuotas))
-    mostrarTotal()
 }
 
 const mostrarTotal = () => {
