@@ -1,3 +1,6 @@
+let productos = []
+const dataURL = "./js/data/data.json"
+
 let cuotas = JSON.parse(localStorage.getItem("cuotas")) || 1
 const IVA = 1.21
 const INTERES = 1.05
@@ -16,63 +19,25 @@ const inputProducto = document.getElementById("indiceProducto")
 const inputCuotas = document.getElementById("cantidadCuotas")
 const totalCompra = document.getElementById("totalCompra")
 const btnConfirmarCuotas = document.getElementById("confirmarCuotas")
+
 const alert = (texto) => Swal.fire({
-        icon: 'error',
-        title: 'Alerta',
-        text: texto,
-  })
-const productos = [
-    {
-        id: 1545,
-        nombre: "Persona 5 Royale",
-        precio: 12000,
-    },
-    {
-        id: 1836,
-        nombre: "Elden Ring",
-        precio: 13000,
-    },
-    {
-        id: 1962,
-        nombre: "Tales Of Arise",
-        precio: 12500,
-    },
-    {
-        id: 1254,
-        nombre: "Dark Souls Remaster",
-        precio: 7000,
-    },
-    {
-        id: 1100,
-        nombre: "GTA V",
-        precio: 5000,
-    },
-    {
-        id: 1999,
-        nombre: "Final Fantasy XVI (pre-order)",
-        precio: 22000,
-    },
-    {
-        id: 1755,
-        nombre: "Stray",
-        precio: 9000,
-    },
-    {
-        id: 1423,
-        nombre: "Nier: Replicant",
-        precio: 11000,
-    },
-    {
-        id: 1025,
-        nombre: "Scarlet Nexus",
-        precio: 10000,
-    },
-    {
-        id: 1001,
-        nombre: "Dragon Quest 11",
-        precio: 10000,
-    },
-]
+    icon: 'error',
+    title: 'Alerta',
+    text: texto,
+})
+const cargarProductos = async () => {
+    try {
+        const response = await fetch(dataURL)
+        const data = await response.json()
+        productos = data
+    } catch (e) {
+        alert("Algo salió mal")
+        console.error(e)
+    } finally {
+        filtrarProductos()
+    }
+}
+cargarProductos()
 
 let productosFiltrados = []
 

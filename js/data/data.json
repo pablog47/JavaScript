@@ -1,0 +1,52 @@
+[
+    {
+        "id": 1545,
+        "nombre": "Persona 5 Royale",
+        "precio": 12000
+    },
+    {
+        "id": 1836,
+        "nombre": "Elden Ring",
+        "precio": 13000
+    },
+    {
+        "id": 1962,
+        "nombre": "Tales Of Arise",
+        "precio": 12500
+    },
+    {
+        "id": 1254,
+        "nombre": "Dark Souls Remaster",
+        "precio": 7000
+    },
+    {
+        "id": 1100,
+        "nombre": "GTA V",
+        "precio": 5000
+    },
+    {
+        "id": 1999,
+        "nombre": "Final Fantasy XVI (pre-order)",
+        "precio": 22000
+    },
+    {
+        "id": 1755,
+        "nombre": "Stray",
+        "precio": 9000
+    },
+    {
+        "id": 1423,
+        "nombre": "Nier: Replicant",
+        "precio": 11000
+    },
+    {
+        "id": 1025,
+        "nombre": "Scarlet Nexus",
+        "precio": 10000
+    },
+    {
+        "id": 1001,
+        "nombre": "Dragon Quest 11",
+        "precio": 10000
+    }
+]
