@@ -2,51 +2,61 @@
     {
         "id": 1545,
         "nombre": "Persona 5 Royale",
-        "precio": 12000
+        "precio": 12000,
+        "imagen": "./assets/products/persona5royal.jpg"
     },
     {
         "id": 1836,
         "nombre": "Elden Ring",
-        "precio": 13000
+        "precio": 13000,
+        "imagen": "./assets/products/eldenring.jpeg"
     },
     {
         "id": 1962,
         "nombre": "Tales Of Arise",
-        "precio": 12500
+        "precio": 12500,
+        "imagen": "./assets/products/talesofarise.jpg"
     },
     {
         "id": 1254,
         "nombre": "Dark Souls Remaster",
-        "precio": 7000
+        "precio": 7000,
+        "imagen": "./assets/products/darksouls.jpg"
     },
     {
         "id": 1100,
         "nombre": "GTA V",
-        "precio": 5000
+        "precio": 5000,
+        "imagen": "./assets/products/gtav.png"
     },
     {
         "id": 1999,
         "nombre": "Final Fantasy XVI (pre-order)",
-        "precio": 22000
+        "precio": 22000,
+        "imagen": "./assets/products/ffxvi.jpg"
     },
     {
         "id": 1755,
         "nombre": "Stray",
-        "precio": 9000
+        "precio": 9000,
+        "imagen": "./assets/products/stray.jpg"
     },
     {
         "id": 1423,
         "nombre": "Nier: Replicant",
-        "precio": 11000
+        "precio": 11000,
+        "imagen": "./assets/products/nier.jpg"
     },
     {
         "id": 1025,
         "nombre": "Scarlet Nexus",
-        "precio": 10000
+        "precio": 10000,
+        "imagen": "./assets/products/scarlet.jpg"
     },
     {
         "id": 1001,
         "nombre": "Dragon Quest 11",
-        "precio": 10000
+        "precio": 10000,
+        "imagen": "./assets/products/dragon.jpg"
     }
 ]

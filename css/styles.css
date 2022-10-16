@@ -1,0 +1,16 @@
+h1 {
+    color:rgb(157, 207, 56)
+}
+
+table {
+    text-align: center;
+}
+
+td {
+    vertical-align: middle;
+}
+
+.productThumbnail {
+    max-width: 80px;
+    max-height: 80px;
+}
