@@ -1,3 +1,5 @@
+import Carrito from "./classes/Carrito.js"
+
 let productos = []
 const dataURL = "./js/data/data.json"
 
@@ -11,11 +13,13 @@ const calcularPrecio = (precio, cuotas) => {
     document.write(`El valor total de su compra (con IVA incluído) es de: $${precioFinal} en ${cuotas} cuota${cuotas > 1 ? `s de $${(precioFinal / cuotas).toFixed(2)}` : ""}.`)
 }
 
-let carrito = JSON.parse(localStorage.getItem("carrito")) || []
+const carrito = new Carrito()
 const buscador = document.getElementById("buscador")
+const tablaListaProductos = document.getElementById("tablaListaProductos")
 const listaProductos = document.getElementById("listaProductos")
+const notFound = document.getElementById("notFound")
+const tablaCarritoProductos = document.getElementById("tablaCarritoProductos")
 const carritoProductos = document.getElementById("carritoProductos")
-const inputProducto = document.getElementById("indiceProducto")
 const inputCuotas = document.getElementById("cantidadCuotas")
 const totalCompra = document.getElementById("totalCompra")
 const btnConfirmarCuotas = document.getElementById("confirmarCuotas")
@@ -51,50 +55,55 @@ const filtrarProductos = () => {
     renderizarProductos()
 }
 
-const agregarProducto = (numero) => {
-    const producto = productosFiltrados[numero-1]
-    const index = carrito.findIndex(elem => elem.id === producto.id)
-    if(index !== -1) {
-        carrito[index] = { ...carrito[index], cantidad: carrito[index].cantidad + 1 }
-    } else {
-        carrito.push({ ...producto, cantidad: 1 })
-    }
-    localStorage.setItem("carrito", JSON.stringify(carrito))
+const agregarProducto = (producto) => {
+    carrito.agregarProducto(producto)
     renderizarCarrito()
 }
 
-const quitarProducto = (numero) => {
-    carrito = carrito.filter((_item, i) => i !== numero)  
-    if(!carrito.length) {
+const quitarProducto = (producto) => {
+    carrito.quitarProducto(producto)
+    if (!carrito.productos.length) {
+        inputCuotas.value = ""
         total = 0
         cuotas = 1
-        inputCuotas.value = ""
     }
-    localStorage.setItem("carrito", JSON.stringify(carrito))
     renderizarCarrito()
 }
 
 const renderizarCarrito = () => {
     carritoProductos.innerHTML = ""
     total = 0
-    carrito.forEach((articulo, i) => {
-        const item = document.createElement("li")
-        item.className = "m-2"
-        const botonQuitar = document.createElement("button")
-        botonQuitar.innerHTML = `Quitar`
-        botonQuitar.type = "button"
-        botonQuitar.className = "btn btn-secondary"
-        botonQuitar.addEventListener("click", () => quitarProducto(i))
-        item.innerHTML = `<span>${articulo.nombre} - $${(articulo.precio * articulo.cantidad * IVA).toFixed(2)} (${articulo.cantidad} x $${articulo.precio} + IVA)</span>`
-        item.appendChild(botonQuitar)
-        carritoProductos.appendChild(item)
-        total += articulo.precio * articulo.cantidad * IVA
-    })
+    if(carrito.productos.length) {
+        tablaCarritoProductos.hidden = false
+        carrito.productos.forEach((producto) => {
+            const tableRow = document.createElement("tr")
+            const botonQuitar = document.createElement("button")
+            botonQuitar.innerHTML = `Quitar`
+            botonQuitar.type = "button"
+            botonQuitar.className = "btn btn-secondary bg-danger"
+            botonQuitar.addEventListener("click", () => quitarProducto(producto))
+            const nombre = document.createElement("td")
+            const cantidad = document.createElement("td")
+            const precio = document.createElement("td")
+            const quitar = document.createElement("td")
+            nombre.textContent = producto.nombre
+            cantidad.textContent = producto.cantidad
+            precio.textContent = `$${(producto.precio * producto.cantidad * IVA).toFixed(2)} (${producto.cantidad} x $${producto.precio} + IVA)`
+            quitar.appendChild(botonQuitar)
+            tableRow.appendChild(nombre)
+            tableRow.appendChild(precio)
+            tableRow.appendChild(quitar)
+            carritoProductos.appendChild(tableRow)
+            total += producto.precio * producto.cantidad * IVA
+        })
+    } else {
+        tablaCarritoProductos.hidden = true
+    }
     mostrarTotal()
 }
 
 const confirmarCuotas = () => {
-    if(!carrito.length) {
+    if(!carrito.productos.length) {
         alert('El carrito está vacío')
     } else {
         cuotas = parseInt(inputCuotas.value)
@@ -117,22 +126,38 @@ const mostrarTotal = () => {
 }
 
 const renderizarProductos = () => {
-    listaProductos.innerHTML = ""
     if(productosFiltrados.length) {
-        productosFiltrados.forEach((producto, i) => {
-            const item = document.createElement("li")
-            item.className = "m-2"
+        tablaListaProductos.hidden = false
+        notFound.hidden = true
+        listaProductos.innerHTML = ""
+        productosFiltrados.forEach((producto) => {
+            const tableRow = document.createElement("tr")
             const botonAgregar = document.createElement("button")
             botonAgregar.innerHTML = `Agregar`
             botonAgregar.type = "button"
-            botonAgregar.className = "btn btn-secondary"
-            botonAgregar.addEventListener("click", () => agregarProducto(i+1))
-            item.innerHTML = `<span>${producto.nombre} - $${producto.precio} (${producto.id})</span>`
-            item.appendChild(botonAgregar)
-            listaProductos.appendChild(item)
+            botonAgregar.className = "btn btn-secondary bg-primary"
+            botonAgregar.addEventListener("click", () => agregarProducto(producto))
+            const nombre = document.createElement("td")
+            const imagen = document.createElement("td")
+            const precio = document.createElement("td")
+            const agregar = document.createElement("td")
+            nombre.textContent = producto.nombre
+            const img = document.createElement("img")
+            img.src = producto.imagen
+            img.classList.add("productThumbnail")
+            imagen.appendChild(img)
+            precio.textContent = producto.precio
+            agregar.appendChild(botonAgregar)
+            tableRow.appendChild(imagen)
+            tableRow.appendChild(nombre)
+            tableRow.appendChild(precio)
+            tableRow.appendChild(agregar)
+            listaProductos.appendChild(tableRow)
         })
     } else {
-        listaProductos.innerHTML = `No se han encontrado productos que coincidan con la búsqueda <b>${buscador.value}</b>.`
+        tablaListaProductos.hidden = true
+        notFound.hidden = false
+        notFound.innerHTML = `No se han encontrado productos que coincidan con la búsqueda <b>${buscador.value}</b>.`
     }
 }
 
